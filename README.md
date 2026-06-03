@@ -31,4 +31,3 @@ Tennis player 🎾 · Specialty coffee enthusiast ☕ · Sports stats obsessive 
 
 ### 📫 Reach me
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-idlir--shkurti-blue?logo=linkedin)](https://www.linkedin.com/in/idlir-shkurti/)
-[![Blog](https://img.shields.io/badge/Blog-idlirshkurti.github.io-orange)](https://idlirshkurti.github.io/)
