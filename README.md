@@ -1,14 +1,14 @@
 # Idlir Shkurti
 
-Senior data engineer and full-stack software engineer in Germany, building reliable data platforms, cloud infrastructure, and AI/ML systems.
+Data scientist based in Germany, working across analytics, data platforms, machine learning, and production AI systems.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="./dark_mode.svg">
   <img alt="Idlir Shkurti GitHub profile card" src="./light_mode.svg" width="720">
 </picture>
 
-- Data engineering, DuckDB, Temporal, and time-series systems
-- Kubernetes, Azure, and production ML
-- Open source and the Albanian tech community
+- Data science, ML evaluation, and time-series forecasting
+- DuckDB, PostgreSQL, Python, SQL, and data pipelines
+- Kubernetes, Azure, FastAPI, Temporal, and LLM systems
 
-Replace `ascii-art.txt` with your own ASCII portrait. The workflow will regenerate both cards after you push it.
+Replace `ascii-art.txt` with your own ASCII portrait. The workflow regenerates both theme-specific cards when you push it.
