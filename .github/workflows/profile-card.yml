@@ -1,0 +1,22 @@
+name: Refresh profile card
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 4 * * *'
+  push:
+    paths: ['ascii-art.txt', 'generate_card.py']
+permissions:
+  contents: write
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python generate_card.py
+      - run: |
+          git diff --quiet && exit 0
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add dark_mode.svg light_mode.svg
+          git commit -m 'chore: refresh profile card'
+          git push
