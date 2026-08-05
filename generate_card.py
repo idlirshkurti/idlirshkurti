@@ -1,14 +1,25 @@
-import html,json,urllib.request,datetime
-u='idlirshkurti'
-def get(url): return json.load(urllib.request.urlopen(urllib.request.Request(url,headers={'User-Agent':'profile-card'})))
-p=get(f'https://api.github.com/users/{u}'); repos=get(f'https://api.github.com/users/{u}/repos?per_page=100&type=owner')
-stars=sum(x['stargazers_count'] for x in repos)
-rows=[('repositories',p['public_repos']),('commits','public profile'),('stars',stars),('followers',p['followers']),('lines of code','public profile'),('languages','Python · SQL · R · TypeScript'),('data','DuckDB · PostgreSQL · pandas'),('ml/ai','Forecasting · LLM systems · evals'),('stack','Kubernetes · Azure · FastAPI · Temporal'),('updated',datetime.datetime.now(datetime.UTC).strftime('%Y-%m-%d'))]
-art=open('ascii-art.txt').read().splitlines()
-def card(path,bg,fg,muted):
- stats=''.join(f"<text x='42' y='{135+i*43}' class='l'>{k}</text><text x='560' y='{135+i*43}' text-anchor='end' class='v'>{v}</text>" for i,(k,v) in enumerate(rows))
- portrait=''.join(f"<tspan x='660' y='{80+i*11}'>{html.escape(line)}</tspan>" for i,line in enumerate(art))
- svg=f'''<svg xmlns="http://www.w3.org/2000/svg" width="1350" height="700" viewBox="0 0 1350 700"><style>.t{{font:700 34px monospace;fill:{fg}}}.s,.l{{font:18px monospace;fill:{muted}}}.v{{font:700 18px monospace;fill:{fg}}}.a{{font:10px monospace;fill:{fg}}}</style><rect width="1350" height="700" rx="22" fill="{bg}"/><rect x="24" y="24" width="1302" height="652" rx="15" fill="none" stroke="{muted}" stroke-opacity=".5"/><line x1="620" y1="48" x2="620" y2="652" stroke="{muted}" stroke-opacity=".5"/><text x="42" y="85" class="t">idlirshkurti@github</text>{stats}<text class="a" xml:space="preserve">{portrait}</text></svg>'''
- open(path,'w').write(svg)
-card('dark_mode.svg','#0d1117','#e6edf3','#8b949e')
-card('light_mode.svg','#ffffff','#1f2328','#59636e')
+import html,json,os,pathlib,subprocess,urllib.request
+U='idlirshkurti';T=os.environ['PROFILE_STATS_TOKEN']
+def api(x):return json.load(urllib.request.urlopen(urllib.request.Request(x,headers={'Authorization':'Bearer '+T,'User-Agent':'profile-card'})))
+def sh(*x):return subprocess.run(x,text=True,capture_output=True,check=True).stdout
+rs=[]
+for n in range(1,100):
+ x=api(f'https://api.github.com/user/repos?affiliation=owner,collaborator&per_page=100&page={n}')
+ if not x:break
+ rs += [r for r in x if not r['fork'] and not r['archived']]
+root=pathlib.Path('/tmp/repos');root.mkdir(exist_ok=True);c=a=d=l=0
+for r in rs:
+ p=root/r['name'];url=r['clone_url'].replace('https://','https://x-access-token:'+T+'@');sh('git','clone','-q','--no-tags',url,str(p));log=sh('git','-C',str(p),'log','--all','--author',U,'--format=1','--numstat')
+ for z in log.splitlines():
+  if z=='1':c+=1
+  elif len(z.split('\t'))==3 and z.split('\t')[0].isdigit():q=z.split('\t');a+=int(q[0]);d+=int(q[1])
+ for f in p.rglob('*'):
+  if f.is_file() and '.git' not in f.parts:
+   try:l+=sum(1 for _ in f.open(errors='ignore'))
+   except:pass
+rows=[('Uptime','32 years'),('Host','jedox'),('Kernel','data scientist'),('Languages.Programming','python, r, sql'),('Tech.Stack','scikit-learn, tensorflow, kubernetes, docker, langgraph'),('Hobbies','football, running, scripting'),('Contact --------------------',''),('Linkedin','idlir-shkurti'),('Blog','idlirshkurti.github.io'),('Github stats ------------------',''),('Repos',len(rs)),('Contributed',c),('Code.Lines',l),('(+/-)',f'+{a:,} / -{d:,}')];art=open('ascii-art.txt').read().splitlines()
+def card(o,b,f,m):
+ y=110;s=''
+ for k,v in rows:s+=f"<text x='42' y='{y}' fill='{f if not v else m}' font-family='monospace' font-size='17'>{k}</text>"+(f"<text x='610' y='{y}' text-anchor='end' fill='{f}' font-family='monospace' font-size='17'>{v}</text>" if v else '');y+=38
+ a=''.join(f"<tspan x='680' y='{85+i*11}'>{html.escape(x)}</tspan>" for i,x in enumerate(art));pathlib.Path(o).write_text(f"<svg xmlns='http://www.w3.org/2000/svg' width='1400' height='700'><rect width='1400' height='700' fill='{b}'/>{s}<text fill='{f}' font-family='monospace' font-size='10'>{a}</text></svg>")
+card('dark_mode.svg','#0d1117','#e6edf3','#8b949e');card('light_mode.svg','#fff','#1f2328','#59636e')
