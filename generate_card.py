@@ -12,7 +12,7 @@ for r in repos:
  try: commits += len(api(r['commits_url'].replace('{/sha}','')+'?author='+u+'&per_page=100'))
  except Exception: pass
 art=open('ascii-art.txt').read().splitlines()
-rows=[('Uptime','32 years'),('Host','jedox'),('Kernel','data scientist'),('Languages.Programming','python, r, sql'),('Tech.Stack','scikit-learn, tensorflow, kubernetes, docker, langgraph'),('Hobbies','football, running, scripting'),('Contact',''),('Linkedin','idlir-shkurti'),('Blog','idlirshkurti.github.io'),('Github stats',''),('Repos',str(len(repos))),('Contributed',str(commits))]
+rows=[('Uptime','32 years'),('Host','jedox'),('Kernel','data scientist'),('Languages.Programming','python, r, sql'),('Tech.Stack','scikit-learn, kubernetes, docker, langgraph'),('Hobbies','football, running, scripting'),('Contact -----------------------------',''),('Linkedin','idlir-shkurti'),('Blog','idlirshkurti.github.io'),('Github stats -----------------------------',''),('Repos',str(len(repos))),('Contributed',str(commits))]
 def make(fn,bg,fg,muted):
  a=''.join(f"<text x='45' y='{90+i*36}' fill='{muted}' font-family='monospace' font-size='17'>{html.escape(k)}</text><text x='625' y='{90+i*36}' text-anchor='end' fill='{fg}' font-family='monospace' font-size='17'>{html.escape(v)}</text>" for i,(k,v) in enumerate(rows));b=''.join(f"<tspan x='700' y='{70+i*11}'>{html.escape(z)}</tspan>" for i,z in enumerate(art));open(fn,'w').write(f"<svg xmlns='http://www.w3.org/2000/svg' width='1400' height='620'><rect width='100%' height='100%' fill='{bg}'/>{a}<text fill='{fg}' font-family='monospace' font-size='10'>{b}</text></svg>")
 make('dark_mode.svg','#0d1117','#e6edf3','#8b949e');make('light_mode.svg','#fff','#1f2328','#59636e')
