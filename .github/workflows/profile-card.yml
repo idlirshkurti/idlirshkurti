@@ -1,14 +1,33 @@
 name: Refresh profile card
+
 on:
   workflow_dispatch:
-  schedule: [{cron: '17 4 * * *'}]
-  push: {branches: [main]}
-permissions: {contents: write}
+  schedule:
+    - cron: '17 4 * * *'
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - run: python generate_card.py
-        env: {PROFILE_STATS_TOKEN: '${{ secrets.PROFILE_STATS_TOKEN }}'}
-      - run: git diff --quiet || (git config user.name github-actions[bot] && git config user.email 41898282+github-actions[bot]@users.noreply.github.com && git add dark_mode.svg light_mode.svg && git commit -m 'chore: refresh profile card' && git push)
+      - name: Generate profile card
+        run: python generate_card.py
+        env:
+          PROFILE_STATS_TOKEN: ${{ secrets.PROFILE_STATS_TOKEN }}
+      - name: Commit refreshed cards
+        run: |
+          if git diff --quiet; then
+            echo "No card changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dark_mode.svg light_mode.svg
+          git commit -m "chore: refresh profile card"
+          git push
